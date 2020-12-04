@@ -1,13 +1,25 @@
-from flask import Flask
-app=Flask(__name__)
+from flask import Flask, url_for, render_template
+import os, glob
+from markupsafe import escape
 
-@app.route('/')
-def index_page():
-    return '<h1>Index page</h1>'
+server_1=Flask(__name__)
+
+req = list()
+with open('requirements.txt') as packejes:
+    for line in packejes:
+        line = f"{line} "
+        req.append(line)
 
 
-@app.route('/hello')
-def hello_world():
-    return '<h2>Hello, World!</h2>'
+@server_1.route('/')
+def index():
+    return 'Index Page'
 
 
+@server_1.route('/requirements/')
+def requirements():
+    return render_template('requirements.html', title=requirements, req=req)
+
+     
+if __name__ == "__main__":
+    server_1.run(debug=True)
