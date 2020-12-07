@@ -1,13 +1,17 @@
 from flask import Flask, url_for, render_template
-import os, glob, csv, requests
+import os, glob, csv, requests, sqlite3
 from markupsafe import escape
 from pathlib import Path
 from faker import Faker
+from database import exec_query
 
-fake = Faker()
+
+fake = Faker(['en-US'])
 
 
 server_1=Flask(__name__)
+
+DATABASE = os.path.join(os.path.dirname(__file__), 'db.sqlite3')
 
 
 @server_1.route('/')
@@ -75,5 +79,22 @@ def astro():
     return r_space
 
 
-if __name__ == "__main__":
+@server_1.route('/names/')
+def cus_names():
+    first_names = []
+    with sqlite3.connect(DATABASE) as conn:
+        with conn as cursor:
+            for cs_nms in cursor.execute("SELECT DISTINCT first_name FROM customers ORDER BY first_name ASC"):
+                first_names.append(cs_nms)
+    return render_template("names.html", first_names=first_names)
+
+
+"""
+@server_1.route('/users/<int:age>')
+def users(age):
+    users_qs = exec_query("SELECT id,username,email,age FROM users WHERE age=?", age)
+    return render_template("users.html", users=users_qs)
+"""
+
+if __name__ == '__main__':
     server_1.run(debug=True)
