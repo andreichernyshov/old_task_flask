@@ -15,7 +15,7 @@ MarkupSafe==1.1.1
 pkg-resources==0.0.0
 pymongo==3.11.2
 python-dateutil==2.8.1
-PyYAML==5.3.1
+PyYAML==5.4
 requests==2.25.0
 scv==2.0.0
 six==1.15.0
